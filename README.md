@@ -1,7 +1,7 @@
 # coronavirus-tweets
 A sample machine learning model for classifying tweets related to coronavirus.
 
-This section contains a simple implementation of hate speech classification model on top of JavaScript using the following technologies:
+This section contains a simple implementation of coronavirus tweet classification model on top of JavaScript using the following technologies:
 
  - NodeJS
  - Natural JS
