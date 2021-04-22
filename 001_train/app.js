@@ -30,18 +30,24 @@ let loadData = () => {
     });
 };
 
+const transform = str => {
+    return str.toLowerCase()
+        .trim()
+        .replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+        .replace(/[^a-zA-Z ]/g, "")
+        .replace(/(\r\n|\n|\r)/gm, "");
+}
 (async () => {
     try {
         let dataset = await loadData();
         let classifier = new natural.BayesClassifier();
-
         dataset.forEach((i) => {
-
-            classifier.addDocument(i.OriginalTweet.toLowerCase(), i.Sentiment);
+            classifier.addDocument(
+                transform(i.OriginalTweet),
+                i.Sentiment
+            );
         });
-
         classifier.train();
-
         await persistModel(classifier);
     } catch (err) {
         console.log(err.message);

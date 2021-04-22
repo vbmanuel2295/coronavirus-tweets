@@ -25,17 +25,22 @@ let loadData = () => {
     });
 };
 
-
+const transform = str => {
+    return str.toLowerCase()
+        .trim()
+        .replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+        .replace(/[^a-zA-Z ]/g, "")
+        .replace(/(\r\n|\n|\r)/gm, "");
+}
 (async () => {
     try {
         let [classifier, data] = await Promise.all([loadFrozenModel(), loadData()]);
         let results = data.map((i, idx) => {
-
-            let predicted = classifier.classify(i.OriginalTweet);
-
+            let predicted = classifier.classify(
+                transform(i.OriginalTweet)
+            );
             console.clear();
             console.log(`Inferring Item ${idx + 1} out of ${data.length}`);
-
             return {
                 text: i.OriginalTweet,
                 actual: i.Sentiment,
@@ -47,7 +52,6 @@ let loadData = () => {
         let missedItems = results.filter((i) => !i.isCorrect);
         let accuracy = (accurateHit.length / data.length) * 100;
         let errorRate = (missedItems.length / data.length) * 100;
-
         console.log(`Accurate: ${accurateHit.length} items`);
         console.log(`Missed: ${missedItems.length} items`);
         console.log(`Accuracy: ${accuracy.toFixed(2)}`);
